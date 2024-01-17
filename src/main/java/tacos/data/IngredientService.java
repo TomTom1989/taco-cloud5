@@ -4,6 +4,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import reactor.core.publisher.Flux;
 import tacos.Ingredient;
 import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.web.reactive.function.client.WebClientResponseException;
+
 import net.minidev.json.JSONArray;
 import net.minidev.json.JSONObject;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -79,12 +81,12 @@ public class IngredientService {
 	        return null;
 	    }
 	}*/
-	 @Bean
+	/* @Bean
 	    public CommandLineRunner run(IngredientService ingredientService) {
 	        return args -> {
 	            ingredientService.findAllIngredients();
 	        };
-	    }
+	    }*/
 	
 	public Ingredient getIngredientById(String ingredientId) {
 	    return webClient
@@ -95,43 +97,9 @@ public class IngredientService {
 	            .block(); // This converts Mono<Ingredient> to Ingredient
 	}
 
-	// Reactive way using Flux  1
+
+// Get all ingredients in Reactive way
 	/*public void findAllIngredients() {
-	    Flux<Ingredient> ingredients = WebClient.create()
-	            .get()
-	            .uri("http://localhost:9000/ingredients")
-	            .retrieve()
-	            .bodyToFlux(Ingredient.class);
-
-	    ingredients.doOnNext(ingredient -> System.out.println("Processing ingredient: " + ingredient))
-	    .doOnError(error -> System.err.println("Error in stream: " + error.getMessage()))
-	    .doOnComplete(() -> System.out.println("Stream completed"))
-	    .subscribe(
-	        ingredient -> {
-	            // Action to perform on each Ingredient
-	            System.out.println("Received ingredient: " + ingredient);
-	        },
-	        error -> {
-	            // Action to perform on error
-	            System.err.println("Error occurred: " + error.getMessage());
-	        },
-	        () -> {
-	            // Action to perform on completion of the stream
-	            System.out.println("All ingredients processed.");
-	        }
-	    );
-	}*/
-//2
-	/*public Flux<Ingredient> findAllIngredients() {
-	    return WebClient.create()
-	            .get()
-	            .uri("http://localhost:9000/ingredients")
-	            .retrieve()
-	            .bodyToFlux(Ingredient.class);
-	}*/
-
-
-	public void findAllIngredients() {
 	    WebClient.create()
 	        .get()
 	        .uri("http://localhost:9000/ingredients")
@@ -155,24 +123,98 @@ public class IngredientService {
 	            },
 	            () -> System.out.println("All ingredients processed.")
 	        );
+	}*/
+	
+	public void createIngredient() {
+	    Ingredient newIngredient = new Ingredient("Ingredient C", Ingredient.Type.WRAP, null, "FLTO" );
+
+	    Mono<Ingredient> ingredientMono = Mono.just(newIngredient);
+
+	    WebClient.create()
+	    .post()
+	    .uri("http://localhost:9000/ingredients")
+	    .body(ingredientMono, Ingredient.class)
+	    .retrieve()
+	    .bodyToMono(Ingredient.class)
+	    .timeout(Duration.ofSeconds(10))
+	    .subscribe(
+	        ingredient -> System.out.println("Created ingredient: " + ingredient),
+	        error -> {
+	            if (error instanceof WebClientResponseException) {
+	                WebClientResponseException responseException = (WebClientResponseException) error;
+	                System.err.println("Error occurred: " + responseException.getStatusCode());
+	                System.err.println("Error body: " + responseException.getResponseBodyAsString());
+	            } else {
+	                System.err.println("Error occurred: " + error.getMessage());
+	            }
+	        },
+	        () -> System.out.println("Ingredient creation process completed.")
+	    );
+
 	}
 	
 	
+	 @Bean
+	    public CommandLineRunner run2(IngredientService ingredientService) {
+	        return args -> {
+	            ingredientService.createIngredient();
+	        };
+	    }
+	
+	
+	 public void deleteIngredient(String ingredientId) {
+		    WebClient.create()
+		        .delete()
+		        .uri("http://localhost:9000/ingredients/{id}", ingredientId)
+		        .retrieve()
+		        .bodyToMono(Void.class) // Typically, DELETE doesn't return a body
+		        .timeout(Duration.ofSeconds(10))
+		        .subscribe(
+		            success -> System.out.println("Deleted ingredient with ID: " + ingredientId),
+		            error -> {
+		                if (error instanceof WebClientResponseException) {
+		                    WebClientResponseException responseException = (WebClientResponseException) error;
+		                    System.err.println("Error occurred: " + responseException.getStatusCode());
+		                    System.err.println("Error body: " + responseException.getResponseBodyAsString());
+		                } else {
+		                    System.err.println("Error occurred: " + error.getMessage());
+		                }
+		            },
+		            () -> System.out.println("Ingredient deletion process completed.")
+		        );
+		}
+
+	
+	
+	 @Bean
+	    public CommandLineRunner run3(IngredientService ingredientService) {
+	        return args -> {
+	            ingredientService.deleteIngredient("COTO");
+	        };
+	    }
 	
 	
 	
 	
-	public Ingredient createIngredient() {
+	
+	
+	
+	
+	
+	
+	
+	
+	/*public Ingredient createIngredient() {
 	    Ingredient newIngredient = new Ingredient("INGC", "Ingredient C", Ingredient.Type.VEGGIES);
 
 	    return webClient.post()
-	            .uri("/ingredients/create")
+	            .uri("/ingredients/")
 	            .body(Mono.just(newIngredient), Ingredient.class)
 	            .retrieve()
 	            .bodyToMono(Ingredient.class)
 	            .block(); // This converts Mono<Ingredient> to Ingredient, making the call synchronous
 	}
-
+*/
 
 
     

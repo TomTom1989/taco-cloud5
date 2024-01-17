@@ -15,16 +15,21 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 @AllArgsConstructor
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Ingredient implements Serializable {
-    
-   
-  //  @Column(name = "appuser_id")
-    //private AppUser user;
-    
-    // New field to store AppUser's ID
+	   private String name;
+	    private Type type;
+	    private Long appUserId;
+	    @Id
+	    //@GeneratedValue(strategy = GenerationType.IDENTITY) 
+	    private String id;
+	 
+	   
+	    /*@ManyToOne
+	    @JoinColumn(name = "appUserId")
+	    private AppUser appUser;*/
 	
-	
+  
 
-    public Ingredient(String id, String name, Type sauce, Long appUserid) {
+    public Ingredient(String name,Type sauce,Long appUserid, String id ) {
         this.id = id;
         this.name = name;
         this.type = sauce;
@@ -37,20 +42,18 @@ public class Ingredient implements Serializable {
     	this.name=name;
     }
     
-    public Ingredient(String id, String name, Type sauce) {
+    public Ingredient(String name,Type sauce, String id ) {
     	this.id=id;
     	this.name=name;
+    	this.type=sauce;
     }
 
     public String getCode() {
         return this.id;
     }
 
-    @Id
-    private String id;
-    private String name;
-    private Type type;
-    private Long appUserId;
+   
+    
 
     @ManyToMany(mappedBy = "ingredients", cascade = CascadeType.ALL)
     private List<Taco> tacos;
