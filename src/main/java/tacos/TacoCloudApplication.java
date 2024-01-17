@@ -50,11 +50,6 @@ public class TacoCloudApplication {
  
     }
     
-    @Bean
-    public CommandLineRunner run(IngredientService ingredientService) {
-        return args -> {
-            ingredientService.findAllIngredients();
-        };
-    }
+   
 }
 

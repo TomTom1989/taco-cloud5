@@ -10,6 +10,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import reactor.core.publisher.Flux;
 import tacos.Ingredient;
 import org.springframework.web.reactive.function.client.WebClient;
+
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -77,7 +79,12 @@ public class IngredientService {
 	        return null;
 	    }
 	}*/
-	
+	 @Bean
+	    public CommandLineRunner run(IngredientService ingredientService) {
+	        return args -> {
+	            ingredientService.findAllIngredients();
+	        };
+	    }
 	
 	public Ingredient getIngredientById(String ingredientId) {
 	    return webClient
@@ -129,20 +136,31 @@ public class IngredientService {
 	        .get()
 	        .uri("http://localhost:9000/ingredients")
 	        .retrieve()
-	        .bodyToMono(JsonNode.class) // Use JsonNode for Jackson parsing
+	        .bodyToMono(JsonNode.class)
 	        .flatMapMany(jsonNode -> {
-	            // Extract the ingredients array from the _embedded object
 	            JsonNode ingredientsNode = jsonNode.path("_embedded").path("ingredients");
 	            ObjectMapper mapper = new ObjectMapper();
 	            return Flux.fromIterable(ingredientsNode)
 	                       .map(node -> mapper.convertValue(node, Ingredient.class));
 	        })
+	        .timeout(Duration.ofSeconds(10)) // Set the timeout duration to 10 seconds
 	        .subscribe(
 	            ingredient -> System.out.println("Received ingredient: " + ingredient),
-	            error -> System.err.println("Error occurred: " + error.getMessage()),
+	            error -> {
+	                if (error instanceof java.util.concurrent.TimeoutException) {
+	                    System.err.println("Request timed out.");
+	                } else {
+	                    System.err.println("Error occurred: " + error.getMessage());
+	                }
+	            },
 	            () -> System.out.println("All ingredients processed.")
 	        );
 	}
+	
+	
+	
+	
+	
 	
 	public Ingredient createIngredient() {
 	    Ingredient newIngredient = new Ingredient("INGC", "Ingredient C", Ingredient.Type.VEGGIES);
