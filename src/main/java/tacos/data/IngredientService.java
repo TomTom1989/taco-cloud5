@@ -81,12 +81,12 @@ public class IngredientService {
 	        return null;
 	    }
 	}*/
-	/* @Bean
+	 @Bean
 	    public CommandLineRunner run(IngredientService ingredientService) {
 	        return args -> {
 	            ingredientService.findAllIngredients();
 	        };
-	    }*/
+	    }
 	
 	public Ingredient getIngredientById(String ingredientId) {
 	    return webClient
@@ -125,6 +125,52 @@ public class IngredientService {
 	        );
 	}*/
 	
+
+	public void findAllIngredients() {
+	    WebClient.create()
+	        .get()
+	        .uri("http://localhost:9000/ingredients")
+	        .exchangeToFlux(response -> { // Changed to exchangeToFlux
+	            // Extract header information
+	            String headerValue = response.headers().header("Your-Header-Name").stream().findFirst().orElse("Not Found");
+
+	            // Process body only if response status is 2xx
+	            if (response.statusCode().is2xxSuccessful()) {
+	                return response.bodyToMono(JsonNode.class)
+	                               .flatMapMany(jsonNode -> {
+	                                   JsonNode ingredientsNode = jsonNode.path("_embedded").path("ingredients");
+	                                   ObjectMapper mapper = new ObjectMapper();
+	                                   return Flux.fromIterable(ingredientsNode)
+	                                              .map(node -> mapper.convertValue(node, Ingredient.class))
+	                                              .doOnNext(ingredient -> System.out.println("Header Value: " + headerValue))
+	                                              .doOnNext(ingredient -> System.out.println("Received ingredient: " + ingredient));
+	                               });
+	            } else {
+	                return Flux.error(new RuntimeException("Non-successful status code"));
+	            }
+	        })
+	        .timeout(Duration.ofSeconds(10))
+	        .subscribe(
+	            ingredient -> { /* Success processing is already handled in exchangeToFlux */ },
+	            error -> {
+	                if (error instanceof java.util.concurrent.TimeoutException) {
+	                    System.err.println("Request timed out.");
+	                } else if (error instanceof WebClientResponseException) {
+	                    WebClientResponseException responseException = (WebClientResponseException) error;
+	                    System.err.println("Error occurred: " + responseException.getStatusCode());
+	                    System.err.println("Error body: " + responseException.getResponseBodyAsString());
+	                } else {
+	                    System.err.println("Error occurred: " + error.getMessage());
+	                }
+	            },
+	            () -> System.out.println("All ingredients processed.")
+	        );
+	}
+	
+	
+	
+	
+	// POST reactive
 	public void createIngredient() {
 	    Ingredient newIngredient = new Ingredient("Ingredient C", Ingredient.Type.WRAP, null, "FLTO" );
 
