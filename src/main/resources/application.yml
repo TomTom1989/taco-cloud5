@@ -1,0 +1,78 @@
+logging:
+  level:
+    tacos.messaging: INFO
+    org:
+      springframework:
+        security: DEBUG
+        security.oauth2: DEBUG
+
+spring:
+  datasource:
+    url: jdbc:h2:mem:testdb
+    driver-class-name: org.h2.Driver
+    username: sa
+    password:
+  main:web-application-type: none
+  
+  mail:
+    host: smtp.mailtrap.io
+    port: 2525
+    username: adff3c69d5f383 
+    password: 1ced68d7811e62 
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+
+   
+ 
+    
+    
+    
+  jpa:
+    hibernate:
+      ddl-auto: update
+      open-in-view: false
+    show-sql: false
+    properties:
+      hibernate:
+        format_sql: true
+  h2:
+    console:
+      enabled: true
+  sql:
+    init:
+      mode: always
+      platform: h2
+      scripts: classpath:schema.sql,classpath:data.sql
+  
+
+security:
+  oauth2:
+    client:
+      registration:
+        facebook:
+          clientId: 2291618721048050
+          clientSecret: e2f74f246bd193335ee806c5419d1ee6
+          scope: email, public_profile
+        oauth2:
+          clientId: taco-admin-client
+          clientSecret: secret
+
+server:
+  port: 9000
+
+  
+  integration:
+    mail:
+     imap-url: imap://adff3c69d5f383:1ced68d7811e62@mailtrap.io:2525/INBOX
+     poll-rate: 60000 
+
+ 
+
+   
+    
+    
+    

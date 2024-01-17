@@ -1,0 +1,23 @@
+From: Magic Elves <from@example.com>
+To: Mailtrap Inbox <to@example.com>
+Subject: TACO ORDER
+Content-Type: multipart/alternative; boundary="boundary-string"
+
+--boundary-string
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
+Content-Disposition: inline
+
+TacoX2: FLTO, COTO
+
+--boundary-string
+Content-Type: text/html; charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
+Content-Disposition: inline
+
+<!doctype html>
+<html>
+...
+</html>
+
+--boundary-string--
