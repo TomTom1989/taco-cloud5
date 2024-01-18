@@ -14,8 +14,10 @@ import org.springframework.security.oauth2.core.AuthorizationGrantType;
 import org.springframework.security.oauth2.core.user.DefaultOAuth2User;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 
+import reactor.core.publisher.Mono;
 import tacos.AppUser;
-import tacos.data.UserRepository;
+//import tacos.data.UserRepository;
+import tacos.data.UserRepository2;
 
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -62,7 +64,7 @@ public class OAuth2LoginConfig {
     }*/     
         
     @Bean
-    public OAuth2UserService<OAuth2UserRequest, OAuth2User> oauth2UserService(UserRepository userRepository) {
+    public OAuth2UserService<OAuth2UserRequest, OAuth2User> oauth2UserService(UserRepository2 userRepository) {
         DefaultOAuth2UserService delegate = new DefaultOAuth2UserService();
         return (OAuth2UserRequest userRequest) -> {
             // Delegate to the default implementation for loading a user
@@ -76,13 +78,13 @@ public class OAuth2LoginConfig {
             mappedAuthorities.add(new SimpleGrantedAuthority("ROLE_USER"));
 
             // Check if user already exists in the database, if not create a new one
-            AppUser appUser = userRepository.findByUsername(email);
-            if (appUser == null) {
-                appUser = new AppUser();
-                appUser.setUsername(email); // Set the email as username
+            Mono<AppUser> appUser = userRepository.findByUsername(email);
+           // if (appUser == null) {
+               // appUser = new AppUser();
+               // appUser.setUsername(email); // Set the email as username
                 // Set other properties as needed or leave them with default values
                 userRepository.save(appUser);
-            }
+            //}
 
             // Return a new OAuth2User with the assigned roles
             return new DefaultOAuth2User(mappedAuthorities, oAuth2User.getAttributes(), "name");

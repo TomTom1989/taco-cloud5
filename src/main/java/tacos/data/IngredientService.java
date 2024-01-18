@@ -58,7 +58,7 @@ import org.springframework.security.core.Authentication;
 public class IngredientService {
 	
 	@Autowired
-    private UserRepository userRepository;
+    private UserRepository2 userRepository;
 	
 	@Autowired
     private IngredientRepository ingredientRepository;
@@ -125,7 +125,7 @@ public class IngredientService {
 	        );
 	}*/
 	
-
+//Using .exchangeToFlux() (or mono if one item) to get Header info in the Response object
 	public void findAllIngredients() {
 	    WebClient.create()
 	        .get()

@@ -4,17 +4,18 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import tacos.data.UserRepository;
+//import tacos.data.UserRepository;
+import tacos.data.UserRepository2;
 
 
 @Controller
 @RequestMapping("/register")
 public class RegistrationController {
- private UserRepository userRepo;
+ private UserRepository2 userRepo;
  private PasswordEncoder passwordEncoder;
  
  public RegistrationController(
- UserRepository userRepo, PasswordEncoder passwordEncoder) {
+ UserRepository2 userRepo, PasswordEncoder passwordEncoder) {
  this.userRepo = userRepo;
  this.passwordEncoder = passwordEncoder;
  }

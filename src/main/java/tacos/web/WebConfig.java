@@ -20,8 +20,5 @@ public class WebConfig implements WebMvcConfigurer {
 	 registry.addViewController("/login");
 	}
 
-	 @Bean
-	    public RestTemplate restTemplate() {
-	        return new RestTemplate();
-	    }
+	
 }

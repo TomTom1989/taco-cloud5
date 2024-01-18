@@ -7,6 +7,7 @@ import java.util.stream.StreamSupport;
 
 import jakarta.validation.Valid;
 
+import org.slf4j.Logger;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.Errors;
@@ -18,6 +19,7 @@ import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.bind.support.SessionStatus;
 
 import lombok.extern.slf4j.Slf4j;
+import reactor.core.publisher.Mono;
 import tacos.Ingredient;
 import tacos.Ingredient.Type;
 import tacos.Taco;
@@ -96,8 +98,8 @@ public String processTaco(@Valid Taco taco, Errors errors,
         return "design";
     }
 
-    Taco savedTaco = tacoRepository.save(taco);
-    tacoOrder.addTacoName(savedTaco.getName());
+    Mono<@Valid Taco> savedTaco = tacoRepository.save(taco);
+    tacoOrder.addTacoName(((Logger) savedTaco).getName());
     model.addAttribute("tacoOrder", tacoOrder);
 
     return "redirect:/orders/current";

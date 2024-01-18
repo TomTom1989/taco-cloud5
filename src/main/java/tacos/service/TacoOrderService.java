@@ -3,6 +3,7 @@ package tacos.service;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
+import reactor.core.publisher.Mono;
 
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
@@ -34,7 +35,7 @@ public class TacoOrderService {
         order.setTacoNames(tacoNames);
 
         // Save the order, now including the taco names
-        TacoOrder savedOrder = orderRepo.save(order);
+        Mono<TacoOrder> savedOrder = orderRepo.save(order);
 
         // Associate each Taco with the savedOrder and save it
         for (Taco taco : order.getTacos()) {

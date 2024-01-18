@@ -21,9 +21,10 @@ import jakarta.persistence.ManyToOne;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
+import reactor.core.publisher.Mono;
 import tacos.data.IngredientRepository;
 import tacos.data.TacoRepository;
-import tacos.data.UserRepository;
+import tacos.data.UserRepository2;
 //import static tacos.email.EmailToOrderTransformer.ALL_INGREDIENTS;
 
 @Data
@@ -80,6 +81,11 @@ public class Taco implements Serializable {
                // ... other fields you want to include
                '}';
     }
+
+	public void setTacoOrder(Mono<TacoOrder> savedOrder) {
+		// TODO Auto-generated method stub
+		
+	}
 
 	
 	
