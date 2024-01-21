@@ -1,10 +1,3 @@
-<<<<<<< HEAD
-CREATE TABLE Ingredients (
-    id BIGINT AUTO_INCREMENT PRIMARY KEY,
-    name VARCHAR(255) NOT NULL,
-    type VARCHAR(255) NOT NULL
-);
-=======
 -- Create the Users table (updated to match the AppUser entity)
 CREATE TABLE IF NOT EXISTS AppUser (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
@@ -71,4 +64,3 @@ CREATE TABLE email_tacos (
 );
 
 
->>>>>>> d0c2e872bb7301d9fae5afb0e76d33c7f5b5df78

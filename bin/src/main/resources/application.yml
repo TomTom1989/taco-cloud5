@@ -1,27 +1,3 @@
-<<<<<<< HEAD
-spring:
-  r2dbc:
-    url: r2dbc:h2:mem:///testdb;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
-    username: sa
-    password:
-  h2:
-    console:
-      enabled: true
-
-server:
-  port: 8080
-
-
-  h2:
-    console:
-      enabled: true
-  datasource:
-    url: jdbc:h2:mem:testdb
-    driverClassName: org.h2.Driver
-    username: sa
-    password:
-    platform: h2
-=======
 logging:
   level:
     tacos.messaging: INFO
@@ -96,13 +72,7 @@ server:
 
  
 
-
-  main:
-    allow-bean-definition-overriding: true
-
-
    
     
     
     
->>>>>>> d0c2e872bb7301d9fae5afb0e76d33c7f5b5df78
